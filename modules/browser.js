@@ -4782,20 +4782,25 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		if (
 			aEvent.target.ownerDocument != this.document ||
-			aEvent.button != 0 ||
+			(aEvent.button != 0 && aEvent.button != 1) ||
 			this.isAccelKeyPressed(aEvent)
 			)
 			return;
 
 		var tab = this.getTabFromEvent(aEvent);
-		if (tab) {
+		if (tab && aEvent.button != 1) {
 			this.onTabClick(aEvent, tab);
 		}
 		else {
 			// click on indented space on the tab bar
 			tab = this.getTabFromTabbarEvent(aEvent);
-			if (tab)
+			if (tab){
 				this.mTabBrowser.selectedTab = tab;
+			}else if(aEvent.button == 1){
+				this.window.undoCloseTab(0);
+				aEvent.preventDefault();
+				aEvent.stopPropagation();
+			}
 		}
 	},
  
